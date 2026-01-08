@@ -6,6 +6,9 @@ A terminal music player for Linux. Search YouTube and stream audio directly from
 
 Note: The code currently has some Italian strings mixed in. I started this project for personal use, then decided to publish it. Future updates will be fully in English.
 
+![shellbeats](screenshot.png)
+
+
 ## Why?
 
 I wrote this because I use a tiling window manager and I got tired of:
