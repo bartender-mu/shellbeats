@@ -40,8 +40,7 @@ Install dependencies:
 
 ```bash
 # Debian/Ubuntu
-sudo apt install mpv libncurses-dev
-pip install yt-dlp
+sudo apt install mpv libncurses-dev yt-dlp
 
 # Arch
 sudo pacman -S mpv ncurses yt-dlp
