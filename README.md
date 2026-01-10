@@ -102,12 +102,14 @@ Build:
 
 ```bash
 make
+make install
 ```
+binary file will be copied in /usr/local/bin/
 
 Run:
 
 ```bash
-./shellbeats
+shellbeats
 ```
 
 ## Controls
