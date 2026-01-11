@@ -154,6 +154,8 @@ shellbeats
 - [ ] Shuffle mode for playlists
 
 - [ ] Maybe some kind of queue system separate from playlists
+      
+- [ ] Creating a playlist while adding a song directly from search doesn’t fetch the number of items in each playlist.
 
 ## License
 
