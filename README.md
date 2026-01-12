@@ -145,18 +145,24 @@ shellbeats
 | `d` | Remove song from playlist |
 | `x` | Delete playlist (when in playlists view) |
 
-## TODO
+## BUGS
 
 - [ ] **Investigate rare playback issue**: Some searched songs don't start playing for some reason. Not sure yet if it's a yt-dlp thing, an mpv thing, or something in my code. Need to dig into the logs and figure out what's happening. If you hit this, try searching for the same song again or pick a different result.
 
-- [ ] Volume controls
-
-- [ ] Shuffle mode for playlists
-
-- [ ] Maybe some kind of queue system separate from playlists
-      
 - [ ] Creating a playlist while adding a song directly from search doesn’t fetch the number of items in each playlist.
 
+## TODO
+
+- [ ] Download MP3 files to disk, including support for downloading entire playlists.
+
+- [ ] Prioritize local storage for playback; stream only when a track has not been downloaded.
+
+- [ ] Use an external thread to manage the download queue, providing status signals such as active downloads, automatic resume after closing the program, and skipping files that fail to download.
+
+- [ ] Provide customizable settings via an ncurses interface, with all settings saved to a configuration file.
+
+- [ ] Allow users to edit the storage path for downloaded music.
+      
 ## License
 
 MIT - do whatever you want with it.
