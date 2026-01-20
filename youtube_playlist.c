@@ -4,9 +4,15 @@
 #include "youtube_playlist.h"
 
 int fetch_youtube_playlist(const char *url, Song *songs, int max_songs,
-                           char *playlist_title, size_t title_size) {
+                           char *playlist_title, size_t title_size,
+                           progress_callback_t progress_callback, void *callback_data) {
     if (!url || !songs || max_songs <= 0 || !playlist_title || title_size == 0) 
         return -1;
+
+    // Report: Fetching playlist title
+    if (progress_callback) {
+        progress_callback(0, "Fetching playlist info...", callback_data);
+    }
 
     char title_cmd[2048];
     snprintf(title_cmd, sizeof(title_cmd),
@@ -31,6 +37,11 @@ int fetch_youtube_playlist(const char *url, Song *songs, int max_songs,
     }
     free(title_line);
     pclose(title_fp);
+
+    // Report: Fetching songs
+    if (progress_callback) {
+        progress_callback(0, "Fetching songs...", callback_data);
+    }
 
     char cmd[2048];
     snprintf(cmd, sizeof(cmd),
@@ -75,6 +86,12 @@ int fetch_youtube_playlist(const char *url, Song *songs, int max_songs,
 
         if (songs[count].title && songs[count].video_id && songs[count].url) {
             count++;
+            // Report progress every 10 songs
+            if (progress_callback && (count % 10 == 0 || count == 1)) {
+                char msg[128];
+                snprintf(msg, sizeof(msg), "Fetched %d songs...", count);
+                progress_callback(count, msg, callback_data);
+            }
         } else {
             free(songs[count].title);
             free(songs[count].video_id);
@@ -84,6 +101,14 @@ int fetch_youtube_playlist(const char *url, Song *songs, int max_songs,
 
     free(line);
     pclose(fp);
+    
+    // Report: Complete
+    if (progress_callback && count > 0) {
+        char msg[128];
+        snprintf(msg, sizeof(msg), "Completed! Fetched %d songs", count);
+        progress_callback(count, msg, callback_data);
+    }
+    
     return count;
 }
 

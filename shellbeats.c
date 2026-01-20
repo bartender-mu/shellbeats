@@ -2281,6 +2281,24 @@ static void draw_ui(AppState *st, const char *status) {
 }
 
 // ============================================================================
+// YouTube Playlist Progress Callback
+// ============================================================================
+
+static void youtube_fetch_progress_callback(int count, const char *message, void *user_data) {
+    char *status_buf = (char *)user_data;
+    if (status_buf && message) {
+        strncpy(status_buf, message, 511);
+        status_buf[511] = '\0';
+        
+        // Redraw UI to show progress
+        if (g_app_state) {
+            draw_ui(g_app_state, status_buf);
+            refresh(); // Force screen update
+        }
+    }
+}
+
+// ============================================================================
 // Input Handling
 // ============================================================================
 
@@ -2911,10 +2929,14 @@ int main(void) {
                                 break;
                             }
 
+                            snprintf(status, sizeof(status), "Validating URL...");
+                            draw_ui(&st, status);
+
                             char fetched_title[256] = {0};
                             Song temp_songs[MAX_PLAYLIST_ITEMS];
                             int fetched = fetch_youtube_playlist(url, temp_songs, MAX_PLAYLIST_ITEMS, 
-                                                                 fetched_title, sizeof(fetched_title));
+                                                                 fetched_title, sizeof(fetched_title),
+                                                                 youtube_fetch_progress_callback, status);
                             if (fetched <= 0) {
                                 snprintf(status, sizeof(status), "Failed to fetch playlist");
                                 break;

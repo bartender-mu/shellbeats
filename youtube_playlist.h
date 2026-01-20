@@ -11,8 +11,13 @@ typedef struct {
     int duration;
 } Song;
 
+// Callback function type for progress updates
+// Parameters: current_count, message, user_data
+typedef void (*progress_callback_t)(int current_count, const char *message, void *user_data);
+
 int fetch_youtube_playlist(const char *url, Song *songs, int max_songs, 
-                           char *playlist_title, size_t title_size);
+                           char *playlist_title, size_t title_size,
+                           progress_callback_t progress_callback, void *callback_data);
 
 bool validate_youtube_playlist_url(const char *url);
 
