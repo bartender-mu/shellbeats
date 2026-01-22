@@ -225,6 +225,8 @@ No known bugs at the moment! If you find something please open an issue.
 ## TODO
 Thanks to **arjuna93** on reddit asking for: "make it cross-platform macOS and *BSD."
 
+Thanks to **kathiravanbtm** asking for "implement YouTube playlist fetching, streaming & bulk download".
+
 ## License
 
 GPL-3.0 license
