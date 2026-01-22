@@ -5,24 +5,11 @@ https://shellbeats.com
 
 ## Updates
 
-**v0.3** - Playlist support and download features!
-- Press `f` to access playlists menu
-- Create, delete, and manage your playlists
-- Add songs from search results with `a`
-- **Download songs as MP3** with `d` key - runs in background thread
-- **Auto-download**: songs are automaticaly queued for download when added to playlists
-- **Offline playback**: plays from local files when availible, streams if not
-- **Smart cleanup**: deleting a playlist removes the folder and all downloaded files
-- **Visual markers**: `[D]` tag shows which songs are saved localy
-- **Settings page**: configure download path (default `~/Music/shellbeats/`)
-- **About screen**: press `i` to see app info
-- **Better UI**: all shortcuts now visible in header (two rows)
-- Auto-play: when a song ends, the next one starts automatically
-- Download queue persists between sessions - interrupted downloads resume on restart
-- Everything saved in `~/.shellbeats/` so your playlists persist between sessions
-- Project started in Italian for personal use, now it's 100% translated in english no more half italian words.)
+**v0.4** 
+- Now you can download or stream an entire playlists from youtube just pasting the link on terminal, thanks to ***kathiravanbtm*** [**More details**](YOUTUBE_PLAYLIST_GUIDE.md)
+- Some bugfixes.
 
-# shellbeats V0.3
+# shellbeats V0.4
 
 ![Demo](shellbeats.gif)
 
@@ -224,8 +211,6 @@ No known bugs at the moment! If you find something please open an issue.
 
 ## TODO
 Thanks to **arjuna93** on reddit asking for: "make it cross-platform macOS and *BSD."
-
-Thanks to **kathiravanbtm** asking for "implement YouTube playlist fetching, streaming & bulk download".
 
 ## License
 
