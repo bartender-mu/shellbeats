@@ -128,13 +128,22 @@ Each playlist file just contains the song title and YouTube video ID. When you p
 
 Install dependencies:
 
-```bash
-# Debian/Ubuntu
-sudo apt install mpv libncurses-dev yt-dlp
 
-# Arch
+### Debian/Ubuntu
+```bash
+sudo apt install mpv libncurses-dev yt-dlp
+```
+### Arch
+```bash
 sudo pacman -S mpv ncurses yt-dlp
 ```
+### macOS (via [Homebrew](https://brew.sh/))
+```bash
+brew install mpv yt-dlp
+```
+> 🛈 This setup has not been personally tested by the author, but the community confirms there are no compilation issues.
+
+
 
 Build:
 
