@@ -302,7 +302,13 @@ If you created a playlist in one of previous sessions, then when you save a trac
 Small bug with PAUSE command tracking, sometimes the UI reverts the [PAUSE] message displayed.
 
 ## TODO
-Find a way to use an "AI agent" to find the music on Youtube and turn it into a Shellbeats playlist
+Find a way to use an "AI agent" to find the music on Youtube and turn it into a Shellbeats playlist.
+Edit playlist name.
+Jump x seconds front/back.
+Start Shellbeats from where it was left before (playlist/music/timestmap).
+Randomize musics in playlist.
+[--:--] never shows duration of the video.
+
 
 ## License
 
