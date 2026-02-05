@@ -318,6 +318,8 @@ Jumping x sec forward/backward (default: 10)
 
 Jumping to time mm:ss
 
+Add support for unicode characters
+
 
 ## License
 
