@@ -332,7 +332,9 @@ If you created a playlist in one of previous sessions, then when you save a trac
 Small bug with PAUSE command tracking, sometimes the UI reverts the [PAUSE] message displayed.
 
 ## TODO
-Find a way to use an "AI agent" to find the music on Youtube and turn it into a Shellbeats playlist.
+Find a way to use an "AI agent" to find the music on Youtube and turn it into a Shellbeats playlist.(probably not a goal of shellbeats)
+
+Start buffering the next song in a separate process, then pause it so it’s ready to resume immediately when the current track ends, reducing delay in music streaming.
 
 Manage cookie from browser.
 
