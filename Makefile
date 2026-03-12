@@ -1,10 +1,17 @@
 # ShellBeats Makefile
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -pthread
-LDFLAGS = -lncurses -pthread
+LDFLAGS = -lncurses -lcurl -lcjson -pthread
+
+# macOS: Homebrew paths
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+    CFLAGS += -I/opt/homebrew/include
+    LDFLAGS += -L/opt/homebrew/lib
+endif
 
 TARGET = shellbeats
-SRC = shellbeats.c youtube_playlist.c
+SRC = shellbeats.c youtube_playlist.c surikata_sync.c
 
 .PHONY: all clean install uninstall
 

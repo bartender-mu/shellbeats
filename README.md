@@ -7,9 +7,20 @@ https://shellbeats.com
 
 ## Updates
 
-Sorry for the delay. Unfortunately, I only had time over the weekend to work on refactoring and implementing new features. I then got stuck on a request to implement Unicode input/output support, but I ran into difficulties and realized that doing it properly would require introducing an additional dependency, which I would prefer to avoid. Therefore, I kindly ask for your patience regarding the Unicode support.
+I apologize for the absence I've been pouring every minute of my free time into the countless requests from users asking for "more tools like shellbeats." I'm about to officially go live with [surikata.app](https://surikata.app): it's a bit like what I always imagined the internet could be without the influence of big corps and marketing. It's a community built around maximum creative freedom and privacy. Through Surikata you can generate a token and keep a copy of your playlists, sync multiple PCs with the same playlists, and import (add-only) playlists shared by other users. To everyone who has appreciated shellbeats, I'm asking you to help me bring surikata.app to life we've submitted for publication on the App Store and Play Store, fingers crossed they approve us!
 
-**v0.6** 
+Previously: sorry for the delay on Unicode support doing it properly would require an additional dependency I'd prefer to avoid. I kindly ask for your patience on that front.
+
+**v0.7**
+- Fixed **pause state desync**: switching playlist and starting a new song while paused no longer causes inverted pause/play state. mpv is now explicitly unpaused on every `loadfile`.
+- Added **XDG_CONFIG_HOME support**: if `$XDG_CONFIG_HOME/shellbeats` exists, it is used instead of `~/.shellbeats`. Existing setups are unaffected.
+- Added **SuriSync** cloud sync integration: push/pull playlists to your Surikata account. Redesigned menu with contextual help text.
+- Fixed **playlist path sanitization**: playlist names containing slashes or special characters no longer create broken directory paths.
+- Changed **remove song** key to `X` (uppercase) to avoid conflicts with shuffle (`R`) and accidental deletions.
+- Fixed compiler warnings: replaced all `strncpy` calls with `snprintf` for a clean zero-warning build.
+- **New build dependencies**: `libcurl` and `cjson` are now required. If upgrading from a previous version, install them before building (see Setup section below).
+
+**v0.6**
 - Fixed song duration not showing (was displaying `--:--`). Duration now correctly fetched from yt-dlp. Actual playlists have duration null because it's stored on json during download.
 - Added **Shuffle Mode** (`R` key): randomizes playback order within current search results or playlist. Loops infinitely until stopped. Shows `[SHUFFLE]` indicator in status bar.
 - Added **Seek controls**: `Left/Right` arrow keys to seek backward/forward (default 10 seconds, configurable in Settings).
@@ -29,13 +40,13 @@ Sorry for the delay. Unfortunately, I only had time over the weekend to work on 
 - Now you can download or stream entire playlists from YouTube just by pasting the link in the terminal, thanks to ***kathiravanbtm***.
 - Some bugfixes.
 
-# shellbeats V0.6
+# shellbeats V0.7
 
 ![Demo](shellbeats.gif)
 
-A terminal music player for Linux & OSX. Search YouTube, stream audio, and download your favorite tracks directly from your command line.
+A terminal music player for Linux & macOS. Search YouTube, stream audio, and download your favorite tracks directly from your command line.
 
-![shellbeats](screenshot.png)
+![shellbeats](shellbeats.jpg)
 
 ## Why?
 
@@ -81,39 +92,37 @@ shellbeats stays in the terminal where it belongs. Search, play, download, done.
 
 ### Download system
 
-The download feature runs in a seperate pthread to keep the UI responsive:
+The download feature runs in a separate pthread to keep the UI responsive:
 
 - Press `d` on any song to add it to the download queue
-- Songs added to playlists are automatically queued for dowload
-- Download happens in background - you can keep browsing and playing music
+- Songs added to playlists are automatically queued for download
+- Download happens in background — you can keep browsing and playing music
 - Queue persists to disk (`~/.shellbeats/download_queue.json`)
 - If you quit with active downloads they'll resume next time you start shellbeats
 - Files are organized by playlist: `~/Music/shellbeats/PlaylistName/Song_[videoid].mp3`
 - Duplicate detection: won't download the same video twice
 - Visual feedback: spinner in status bar shows active downloads
 
-When playing from a playlist, shellbeats checks if the file exists localy first. If it does it plays from disk (instant, no buffering), otherwise it streams from YouTube.
+When playing from a playlist, shellbeats checks if the file exists locally first. If it does it plays from disk (instant, no buffering), otherwise it streams from YouTube.
 
 ### Auto-play detection
 
-The auto-play feature uses mpv's IPC socket to detect when a track ends. Here's the deal:
+The auto-play feature uses mpv's IPC socket to detect when a track ends:
 
 - shellbeats connects to mpv via a Unix socket (`/tmp/shellbeats_mpv.sock`)
 - The main loop uses `getch()` with 100ms timeout to check for events without burning CPU
 - When mpv finishes a track, it sends an `end-file` event with `reason: eof`
 - shellbeats catches this and automatically loads the next song
 
-There's a small catch though: when you start a new song, mpv might fire some events during the initial buffering phase. To avoid false positives (like skipping through the whole playlist instantly), there's a 3-second grace period after starting playback where end-file events are ignored. The socket buffer gets drained during this time so stale events don't pile up.
-
-It's not the most elegant solution, but it works reliably without hammering the CPU with constant status polling.
+There's a small catch: when you start a new song, mpv might fire some events during the initial buffering phase. To avoid false positives (like skipping through the whole playlist instantly), there's a 3-second grace period after starting playback where end-file events are ignored. The socket buffer gets drained during this time so stale events don't pile up.
 
 ### Playlist storage
 
-Playlists are stored as simple JSON files:
+shellbeats respects `$XDG_CONFIG_HOME` if set. If `$XDG_CONFIG_HOME/shellbeats` exists, it is used as the config directory. Otherwise, the default `~/.shellbeats` is used.
 
 ```
-~/.shellbeats/
-├── config.json             # app configuration (download path)
+~/.shellbeats/                     (or $XDG_CONFIG_HOME/shellbeats/)
+├── config.json             # app configuration (download path, settings)
 ├── playlists.json          # index of all playlists
 ├── download_queue.json     # pending downloads
 ├── shellbeats.log          # runtime log (when started with -log)
@@ -139,7 +148,7 @@ Downloaded files:
 └── (songs not in playlists go in root)
 ```
 
-Each playlist file just contains the song title and YouTube video ID. When you play a song shellbeats reconstructs the URL from the ID. Simple and easy to edit by hand if you ever need to.
+Each playlist file contains the song title and YouTube video ID. When you play a song, shellbeats reconstructs the URL from the ID. Simple and easy to edit by hand if you ever need to.
 
 ### Logging
 
@@ -189,6 +198,7 @@ You can import entire YouTube playlists into shellbeats, either for streaming or
 | Key | Context | Action |
 |-----|---------|--------|
 | `p` | Playlists menu | Import a YouTube playlist |
+| `u` | Inside a YouTube playlist | Sync with YouTube (fetch new songs) |
 | `D` | Inside a YouTube playlist | Download all songs in the playlist |
 
 - Imported playlists show a `[YT]` indicator in the UI
@@ -198,6 +208,36 @@ You can import entire YouTube playlists into shellbeats, either for streaming or
 - Playlist type (youtube/local) is persisted in the JSON file
 
 > YouTube Playlist integration contributed by ***kathiravanbtm***
+
+## SuriSync — Sync & Share Playlists
+
+![SuriSync](surikata_preview.gif)
+
+**Sync your playlists across multiple computers** and share them with the community through [surikata.app](https://surikata.app).
+
+### How it works
+
+1. Create a free account on [surikata.app](https://surikata.app) and generate a sync token
+2. In shellbeats, press `s` from the playlist view to open the SuriSync menu
+3. Paste your token to link your account
+4. **Push** your local playlists to the cloud
+5. **Pull** your playlists on any other computer running shellbeats
+
+### What you can do
+
+- **Sync between computers**: keep the same playlists on your desktop, laptop, and any other machine — push from one, pull from another
+- **Share playlists with the community**: your playlists can be discovered by other Surikata users
+- **Import playlists from others**: browse and import (add-only) playlists shared by the community directly into shellbeats
+- **Follow playlists**: follow other users' playlists and receive updates when they add new songs
+
+Sync is additive-only — importing or pulling never removes your existing songs.
+
+### SuriSync controls
+
+| Key | Context | Action |
+|-----|---------|--------|
+| `s` | Playlist view | Open SuriSync menu |
+| `Enter` | SuriSync menu | Execute selected action (push/pull/link/unlink) |
 
 ## Dependencies
 
@@ -221,22 +261,19 @@ When running commands (search, download, streaming), shellbeats uses the local b
 
 Install dependencies:
 
-
 ### Debian/Ubuntu
 ```bash
-sudo apt install mpv libncurses-dev yt-dlp
+sudo apt install mpv libncurses-dev libcurl4-openssl-dev libcjson-dev yt-dlp curl
 ```
 ### Arch
 ```bash
-sudo pacman -S mpv ncurses yt-dlp
+sudo pacman -S mpv ncurses curl cjson yt-dlp
 ```
 ### macOS (via [Homebrew](https://brew.sh/))
 ```bash
-brew install mpv yt-dlp
+brew install mpv yt-dlp cjson curl
 ```
-> Note: This setup has not been personally tested by the author, but the community confirms there are no compilation issues.
-
-
+> Note: macOS setup has not been personally tested by the author, but the community confirms there are no compilation issues. ncurses is included with Xcode Command Line Tools.
 
 Build:
 
@@ -244,7 +281,7 @@ Build:
 make
 make install
 ```
-binary file will be copied in /usr/local/bin/
+Binary will be copied to `/usr/local/bin/`.
 
 Run:
 
@@ -254,7 +291,7 @@ shellbeats
 
 ## Controls
 
-All shortcuts are now visible in the header when you run shellbeats. Heres the complete list:
+All shortcuts are visible in the header when you run shellbeats. Here's the complete list:
 
 ### Playback
 
@@ -289,10 +326,17 @@ All shortcuts are now visible in the header when you run shellbeats. Heres the c
 | `c` | Create new playlist |
 | `e` | Rename playlist |
 | `p` | Import YouTube playlist |
-| `r` | Remove song from playlist |
+| `X` | Remove song from playlist |
 | `x` | Delete playlist (including folder & downloaded files) |
 | `d` | Download song or entire playlist |
 | `D` | Download all songs (YouTube playlists) |
+| `u` | Sync YouTube playlist |
+
+### SuriSync
+
+| Key | Action |
+|-----|--------|
+| `s` | Open SuriSync menu (from playlist view) |
 
 ### Other
 
@@ -314,12 +358,14 @@ All shortcuts are now visible in the header when you run shellbeats. Heres the c
 ## Features
 
 - **Offline Mode**: Download songs and play them without internet
-- **Smart Playback**: Automatically plays from disk when available
+- **Smart Playback**: Automatically plays from disk when available, streams otherwise
 - **Background Downloads**: Keep using the app while downloads run
 - **YouTube Playlists**: Import entire playlists for streaming or download
 - **Shuffle Mode**: Randomize playback with infinite loop, shows `[SHUFFLE]` indicator
 - **Seek Controls**: Jump forward/backward by configurable seconds, or to specific time
 - **Session Memory**: Optionally restore your last search or playlist on startup
+- **SuriSync**: Cloud sync playlists to your Surikata account
+- **XDG Support**: Respects `$XDG_CONFIG_HOME` for config directory location
 - **Visual Feedback**: `[D]` marker shows downloaded songs, `[YT]` marks YouTube playlists, spinner shows active downloads
 - **Organized Storage**: Each playlist gets its own folder
 - **Clean Deletion**: Removing a playlist deletes its folder and all files
@@ -328,20 +374,20 @@ All shortcuts are now visible in the header when you run shellbeats. Heres the c
 - **Debug Logging**: Detailed playback logs with `-log` flag for troubleshooting
 
 ## BUGS
+
 If you created a playlist in one of previous sessions, then when you save a track to the playlist, it displays the number of already saved tracks as (0).
-Small bug with PAUSE command tracking, sometimes the UI reverts the [PAUSE] message displayed.
 
 ## TODO
-Find a way to use an "AI agent" to find the music on Youtube and turn it into a Shellbeats playlist.(probably not a goal of shellbeats)
 
-Start buffering the next song in a separate process, then pause it so it’s ready to resume immediately when the current track ends, reducing delay in music streaming.
+Add support for unicode characters (had some problems, was in 0.6 wishlist — sorry).
+
+Start buffering the next song in a separate process, then pause it so it's ready to resume immediately when the current track ends, reducing delay in music streaming.
 
 Manage cookie from browser.
 
-Add support for unicode characters (had some problems was in 0.6 wishlist sorry).
+## Stores & Repo
 
-Add a check for $XDG_CONFIG_HOME
-
+[![badge](https://github.com/Botspot/pi-apps/blob/master/icons/badge.png?raw=true)](https://github.com/Botspot/pi-apps)
 
 ## License
 
