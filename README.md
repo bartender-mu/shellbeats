@@ -5,6 +5,8 @@ https://shellbeats.com
 
 👉 [Playing YouTube from the Command Line – HackaDay](https://hackaday.com/2026/01/31/playing-youtube-from-the-command-line/)
 
+👉 [Surikata.app – Guild](https://surikata.app/g/9fa4af84829f)
+
 ## Updates
 
 I apologize for the absence I've been pouring every minute of my free time into the countless requests from users asking for "more tools like shellbeats." I'm about to officially go live with [surikata.app](https://surikata.app): it's a bit like what I always imagined the internet could be without the influence of big corps and marketing. It's a community built around maximum creative freedom and privacy. Through Surikata you can generate a token and keep a copy of your playlists, sync multiple PCs with the same playlists, and import (add-only) playlists shared by other users. To everyone who has appreciated shellbeats, I'm asking you to help me bring surikata.app to life we've submitted for publication on the App Store and Play Store, fingers crossed they approve us!
