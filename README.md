@@ -3,9 +3,9 @@ https://shellbeats.com
 
 [![Make a donation](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=RFY5QFC6XDX5N)
 
-👉 [Playing YouTube from the Command Line – HackaDay](https://hackaday.com/2026/01/31/playing-youtube-from-the-command-line/)
+<a href="https://apps.apple.com/it/app/surikata/id6760357143"><img src="https://surikata.app/assets/stores/app-store.png" height="40"></a> **Surikata for playlist sync available in appstore!**
 
-<img src="https://surikata.app/favicon.ico" width="20" height="20"> [Surikata.app –  Guild](https://surikata.app/g/9fa4af84829f)  -> **We are looking for 12 betatester on surikata.app PlayStore App, if you are interested please sign-in and contact me on SurikataNews Guild!**
+**We are looking for 12 betatester on surikata.app PlayStore App, if you are interested please sign-in and contact me on SurikataNews Guild!**
 
 ## Updates
 
